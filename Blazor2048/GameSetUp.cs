@@ -48,7 +48,6 @@ namespace Blazor2048
 
 		public static void OnLeftMove()
 		{
-			byte changes = 0;
 			// Loop over all rows
 			for (int i = 0; i < components.Length; i++)
 			{
@@ -99,10 +98,7 @@ namespace Blazor2048
 					}
 				}
 			}
-			if (changes > 0)
-			{
-				AddComponent();
-			}
+			AddComponent();
 		}
 
 	}
