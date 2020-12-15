@@ -32,7 +32,21 @@ namespace Blazor2048
 			return randomPosition;
 		}
 
-
+		private static bool BoardChanged(Component[][] old, Component[][] modified)
+		{
+			for (int i = 0; i < old.Length; i++)
+			{
+				for (int j = 0; j < old[i].Length; j++)
+				{
+					Console.WriteLine(old[i][j].Value);
+					Console.WriteLine(modified[i][j].Value);
+					Console.WriteLine(old[i][j].Value != modified[i][j].Value);
+					if (old[i][j].Value != modified[i][j].Value) return true;
+					else continue;
+				}
+			}
+			return false;
+		}
 
 		public static void SetUpGame()
 		{
@@ -48,6 +62,7 @@ namespace Blazor2048
 
 		public static void OnLeftMove()
 		{
+			Component[][] tempComponents = components;
 			// Loop over all rows
 			for (int i = 0; i < components.Length; i++)
 			{
@@ -98,8 +113,65 @@ namespace Blazor2048
 					}
 				}
 			}
+
+			AddComponent();
+		}
+
+		public static void OnRightMove()
+		{
+			// Loop over all rows
+			for (int i = 0; i < components.Length; i++)
+			{
+				// Counter indicates where the first empty component is in this row
+				int counter = components[i].Length - 1;
+				// In each row loop over all columns
+				for (int j = components[i].Length - 1; j >= 0; j--)
+				{
+					// Reset temp
+					string temp;
+					// If the current component is empty, continue without doing anything
+					if (components[i][j].Value == null)
+					{
+						continue;
+					}
+					// If the component is not empty, AND is't the first component on the row that has a value
+					else if (components[i][j].Value != null && counter == components[i].Length)
+					{
+						// temp is set to be the value of the fisrt component in the row (counter)
+						temp = components[i][counter].Value;
+						//The value of the current component is moved to the first empty component
+						components[i][counter].Value = components[i][j].Value;
+						// The value of temp is moved to the current component
+						components[i][j].Value = temp;
+						// Move up the empty spot with one
+						counter--;
+					}
+					// If the component is not empty, AND the first component is already full
+					else if (components[i][j].Value != null && counter < components[i].Length)
+					{
+						// Check if the first component's value is the same as the current value
+						if (components[i][j].Value == components[i][counter - 1].Value)
+						{
+							// If yes, merge the 2 values
+							components[i][counter - 1].Value = (int.Parse(components[i][j].Value) + int.Parse(components[i][counter - 1].Value)).ToString();
+							// And set the current value to null
+							components[i][j].Value = null;
+						}
+						else
+						{
+							// If it's not equal, swap the values of counter and the current
+							temp = components[i][counter].Value;
+							components[i][counter].Value = components[i][j].Value;
+							components[i][j].Value = temp;
+							// And move up the empty spot
+							counter--;
+						}
+					}
+				}
+			}
 			AddComponent();
 		}
 
 	}
 }
+//TODO figure out how to copy a reference type

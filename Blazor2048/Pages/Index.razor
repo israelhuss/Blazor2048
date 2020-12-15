@@ -11,12 +11,40 @@
     }
 
     .component {
-        background-color: lightgray;
         border-radius: 7px;
-        font-size: 4rem;
         font-weight: bold;
         text-align: center;
         line-height: 1.4;
+    }
+
+    .comp- {
+        background-color: lightgray;
+        font-size: 4rem;
+    }
+
+    .comp-2 {
+        font-size: 4rem;
+        background-color: beige;
+    }
+
+    .comp-4 {
+        font-size: 4rem;
+        background-color: aqua;
+    }
+
+    .comp-8 {
+        font-size: 4rem;
+        background-color: lightblue;
+    }
+
+    .comp-16 {
+        font-size: 3.3rem;
+        background-color: purple;
+        color: #e9e9e9;
+        line-height: 1.7;
+    }
+
+    .comp-32 {
     }
 
     .row {
@@ -34,7 +62,7 @@
         <div class="row">
             @for (int j = 0; j < components[i].Length; j++)
             {
-                <div class="col component">@components[i][j].Value</div>
+                <div class="col component comp-@components[i][j].Value">@components[i][j].Value</div>
             }
         </div>
     }
@@ -44,7 +72,6 @@
 @code {
     protected override void OnInitialized()
     {
-        Console.WriteLine("Hello!!!");
         SetUpGame();
     }
 
@@ -55,5 +82,10 @@
         {
             OnLeftMove();
         }
+        else if (e.Key == "ArrowRight")
+        {
+            OnRightMove();
+        }
+
     }
 }
