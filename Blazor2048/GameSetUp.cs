@@ -4,12 +4,46 @@ namespace Blazor2048
 {
 	class GameSetUp
 	{
-		private static Component[] componentsRow1 = new Component[4] { new Component(0, 0), new Component(0, 1), new Component(0, 2), new Component(0, 3) };
-		private static Component[] componentsRow2 = new Component[4] { new Component(1, 0), new Component(1, 1), new Component(1, 2), new Component(1, 3) };
-		private static Component[] componentsRow3 = new Component[4] { new Component(2, 0), new Component(2, 1), new Component(2, 2), new Component(2, 3) };
-		private static Component[] componentsRow4 = new Component[4] { new Component(3, 0), new Component(3, 1), new Component(3, 2), new Component(3, 3) };
-		public static Component[][] components = new Component[4][] { componentsRow1, componentsRow2, componentsRow3, componentsRow4 };
 		private static readonly Random random = new Random();
+		public static string[,] components;
+
+		public static void SetUpGame(int num)
+		{
+			components = new string[num, num];
+			for (int i = 0; i < num; i++)
+			{
+				for (int j = 0; j < num; j++)
+				{
+					components[i, j] = null;
+				}
+			}
+			AddComponent();
+			AddComponent();
+		}
+
+		private static void AddComponent()
+		{
+			int[] randomPosition = GetEmptySpace();
+			components[randomPosition[0], randomPosition[1]] = "2";
+		}
+
+		private static int[] GetEmptySpace()
+		{
+			if (!CheckIfFull())
+			{
+				int[] randomPosition = GetRandomPosition();
+				while (!string.IsNullOrEmpty(components[randomPosition[0], randomPosition[1]]))
+				{
+					randomPosition = GetRandomPosition();
+					continue;
+				}
+				return randomPosition;
+			}
+			else
+			{
+				throw new GameOverException();
+			}
+		}
 
 		private static int[] GetRandomPosition()
 		{
@@ -20,149 +54,148 @@ namespace Blazor2048
 			return randomPosition;
 		}
 
-
-		private static int[] GetEmptySpace()
+		private static bool CheckIfFull()
 		{
-			int[] randomPosition = GetRandomPosition();
-			while (components[randomPosition[0]][randomPosition[1]].Value != null)
+			int count = 0;
+			for (int i = 0; i < components.GetLength(0); i++)
 			{
-				randomPosition = GetRandomPosition();
-				continue;
+				for (int j = 0; j < components.GetLength(1); j++)
+				{
+					if (!string.IsNullOrEmpty(components[i, j]))
+					{
+						count++;
+					}
+				}
 			}
-			return randomPosition;
+			if (count == 16) return true;
+			else return false;
 		}
 
-		private static bool BoardChanged(Component[][] old, Component[][] modified)
+		
+
+		private static bool BoardChanged(string[,] old, string[,] modified)
 		{
-			for (int i = 0; i < old.Length; i++)
+			for (int i = 0; i < old.GetLength(0); i++)
 			{
-				for (int j = 0; j < old[i].Length; j++)
+				for (int j = 0; j < old.GetLength(1); j++)
 				{
-					Console.WriteLine(old[i][j].Value);
-					Console.WriteLine(modified[i][j].Value);
-					Console.WriteLine(old[i][j].Value != modified[i][j].Value);
-					if (old[i][j].Value != modified[i][j].Value) return true;
+					Console.WriteLine(old[i,j]);
+					Console.WriteLine(modified[i,j]);
+					Console.WriteLine(old[i,j] != modified[i,j]);
+					if (old[i,j]!= modified[i,j]) return true;
 					else continue;
 				}
 			}
 			return false;
 		}
 
-		public static void SetUpGame()
-		{
-			AddComponent();
-			AddComponent();
-		}
+		
 
-		public static void AddComponent()
-		{
-			int[] randomPosition = GetEmptySpace();
-			components[randomPosition[0]][randomPosition[1]].Value = "2";
-		}
-
+		
 		public static void OnLeftMove()
 		{
-			Component[][] tempComponents = components;
+			string[,] tempComponents = components;
 			// Loop over all rows
-			for (int i = 0; i < components.Length; i++)
+			for (int i = 0; i < components.GetLength(0); i++)
 			{
-				// Counter indicates where the first empty component is in this row
+				// Counter indicates where the first empty space is in the current [i] row
 				int counter = 0;
 				// In each row loop over all columns
-				for (int j = 0; j < components[i].Length; j++)
+				for (int j = 0; j < components.GetLength(1); j++)
 				{
 					// Reset temp
 					string temp;
 					// If the current component is empty, continue without doing anything
-					if (components[i][j].Value == null)
+					if (string.IsNullOrEmpty(components[i, j]))
 					{
 						continue;
 					}
 					// If the component is not empty, AND is't the first component on the row that has a value
-					else if (components[i][j].Value != null && counter == 0)
+					else if (!string.IsNullOrEmpty(components[i, j]) && counter == 0)
 					{
 						// temp is set to be the value of the fisrt component in the row (counter)
-						temp = components[i][counter].Value;
+						temp = components[i, counter];
 						//The value of the current component is moved to the first empty component
-						components[i][counter].Value = components[i][j].Value;
+						components[i, counter] = components[i, j];
 						// The value of temp is moved to the current component
-						components[i][j].Value = temp;
+						components[i, j] = temp;
 						// Move up the empty spot with one
 						counter++;
 					}
 					// If the component is not empty, AND the first component is already full
-					else if (components[i][j].Value != null && counter > 0)
+					else if (!string.IsNullOrEmpty(components[i, j]) && counter > 0)
 					{
 						// Check if the first component's value is the same as the current value
-						if (components[i][j].Value == components[i][counter - 1].Value)
+						if (components[i, j] == components[i, counter - 1])
 						{
 							// If yes, merge the 2 values
-							components[i][counter - 1].Value = (int.Parse(components[i][j].Value) + int.Parse(components[i][counter - 1].Value)).ToString();
+							components[i, counter - 1] = (int.Parse(components[i, j]) + int.Parse(components[i, counter - 1])).ToString();
 							// And set the current value to null
-							components[i][j].Value = null;
+							components[i, j] = string.Empty;
 						}
 						else
 						{
 							// If it's not equal, swap the values of counter and the current
-							temp = components[i][counter].Value;
-							components[i][counter].Value = components[i][j].Value;
-							components[i][j].Value = temp;
+							temp = components[i, counter];
+							components[i, counter] = components[i, j];
+							components[i, j] = temp;
 							// And move up the empty spot
 							counter++;
 						}
 					}
 				}
 			}
-
+			DisplayStuff(ref components);
 			AddComponent();
+			DisplayStuff(ref components);
 		}
 
 		public static void OnRightMove()
 		{
 			// Loop over all rows
-			for (int i = 0; i < components.Length; i++)
+			for (int i = 0; i < components.GetLength(0); i++)
 			{
 				// Counter indicates where the first empty component is in this row
-				int counter = components[i].Length - 1;
+				int counter = components.GetLength(0) - 1;
 				// In each row loop over all columns
-				for (int j = components[i].Length - 1; j >= 0; j--)
+				for (int j = components.GetLength(1) - 1; j >= 0; j--)
 				{
 					// Reset temp
 					string temp;
 					// If the current component is empty, continue without doing anything
-					if (components[i][j].Value == null)
+					if (components[i, j] == null)
 					{
 						continue;
 					}
 					// If the component is not empty, AND is't the first component on the row that has a value
-					else if (components[i][j].Value != null && counter == components[i].Length)
+					else if (components[i, j] != null && counter == (components.GetLength(0) - 1))
 					{
 						// temp is set to be the value of the fisrt component in the row (counter)
-						temp = components[i][counter].Value;
+						temp = components[i, counter];
 						//The value of the current component is moved to the first empty component
-						components[i][counter].Value = components[i][j].Value;
+						components[i, counter] = components[i, j];
 						// The value of temp is moved to the current component
-						components[i][j].Value = temp;
+						components[i, j] = temp;
 						// Move up the empty spot with one
 						counter--;
 					}
 					// If the component is not empty, AND the first component is already full
-					else if (components[i][j].Value != null && counter < components[i].Length)
+					else if (components[i, j] != null && counter < (components.GetLength(0) - 1))
 					{
 						// Check if the first component's value is the same as the current value
-						if (components[i][j].Value == components[i][counter - 1].Value)
+						if (components[i, j] == components[i, counter])
 						{
 							// If yes, merge the 2 values
-							components[i][counter - 1].Value = (int.Parse(components[i][j].Value) + int.Parse(components[i][counter - 1].Value)).ToString();
+							components[i, counter] = (int.Parse(components[i, j]) + int.Parse(components[i, counter])).ToString();
 							// And set the current value to null
-							components[i][j].Value = null;
+							components[i, j] = null;
 						}
 						else
 						{
 							// If it's not equal, swap the values of counter and the current
-							temp = components[i][counter].Value;
-							components[i][counter].Value = components[i][j].Value;
-							components[i][j].Value = temp;
+							temp = components[i, counter];
+							components[i, counter] = components[i, j];
+							components[i, j] = temp;
 							// And move up the empty spot
 							counter--;
 						}
@@ -172,6 +205,19 @@ namespace Blazor2048
 			AddComponent();
 		}
 
+
+		private static void DisplayStuff(ref string[,] toDisplay)
+		{
+			for (int i = 0; i < toDisplay.GetLength(0); i++)
+			{
+					Console.WriteLine($"|{toDisplay[i,0]}| {toDisplay[i, 1]}| {toDisplay[i, 2]}| {toDisplay[i, 3]}|");
+			}
+			Console.WriteLine("");
+		}
+
 	}
 }
+
+
+
 //TODO figure out how to copy a reference type
