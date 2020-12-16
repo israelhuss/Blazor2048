@@ -71,7 +71,7 @@ namespace Blazor2048
 			else return false;
 		}
 
-		
+
 
 		private static bool BoardChanged(string[,] old, string[,] modified)
 		{
@@ -79,20 +79,20 @@ namespace Blazor2048
 			{
 				for (int j = 0; j < old.GetLength(1); j++)
 				{
-					Console.WriteLine(old[i,j]);
-					Console.WriteLine(modified[i,j]);
-					Console.WriteLine(old[i,j] != modified[i,j]);
-					if (old[i,j]!= modified[i,j]) return true;
+					Console.WriteLine(old[i, j]);
+					Console.WriteLine(modified[i, j]);
+					Console.WriteLine(old[i, j] != modified[i, j]);
+					if (old[i, j] != modified[i, j]) return true;
 					else continue;
 				}
 			}
 			return false;
 		}
 
-		
 
-		
-		public static void OnLeftMove()
+
+
+		public static void OnMoveLeft()
 		{
 			string[,] tempComponents = components;
 			// Loop over all rows
@@ -150,7 +150,7 @@ namespace Blazor2048
 			DisplayStuff(ref components);
 		}
 
-		public static void OnRightMove()
+		public static void OnMoveRight()
 		{
 			// Loop over all rows
 			for (int i = 0; i < components.GetLength(0); i++)
@@ -210,7 +210,7 @@ namespace Blazor2048
 		{
 			for (int i = 0; i < toDisplay.GetLength(0); i++)
 			{
-					Console.WriteLine($"|{toDisplay[i,0]}| {toDisplay[i, 1]}| {toDisplay[i, 2]}| {toDisplay[i, 3]}|");
+				Console.WriteLine($"|{toDisplay[i, 0]}| {toDisplay[i, 1]}| {toDisplay[i, 2]}| {toDisplay[i, 3]}|");
 			}
 			Console.WriteLine("");
 		}

@@ -62,7 +62,7 @@
         <div class="row">
             @for (int j = 0; j < components.GetLength(1); j++)
             {
-                <div class="col component comp-@components[i,j]">@components[i,j]</div>
+                <div class="col component comp-@components[i,j]">@components[i, j]</div>
             }
         </div>
     }
@@ -80,11 +80,11 @@
         Console.WriteLine(e.Key);
         if (e.Key == "ArrowLeft")
         {
-            OnLeftMove();
+            OnMoveLeft();
         }
         else if (e.Key == "ArrowRight")
         {
-            OnRightMove();
+            OnMoveRight();
         }
 
     }
