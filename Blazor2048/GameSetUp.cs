@@ -23,8 +23,16 @@ namespace Blazor2048
 
 		private static void AddComponent()
 		{
-			int[] randomPosition = GetEmptySpace();
-			components[randomPosition[0], randomPosition[1]] = "2";
+			try
+			{
+				int[] randomPosition = GetEmptySpace();
+				components[randomPosition[0], randomPosition[1]] = "2";
+			}
+			catch (GameOverException)
+			{
+				SetUpGame(4);
+			}
+			
 		}
 
 		private static int[] GetEmptySpace()
@@ -71,7 +79,18 @@ namespace Blazor2048
 			else return false;
 		}
 
-
+		private static string[,] CopyString(string[,] componentString)
+		{
+			string[,] newString = new string[componentString.GetLength(0), componentString.GetLength(1)];
+			for (int i = 0; i < componentString.GetLength(0); i++)
+			{
+				for (int j = 0; j < componentString.GetLength(1); j++)
+				{
+					newString[i, j] = componentString[i, j];
+				}
+			}
+			return newString;
+		}
 
 		private static bool BoardChanged(string[,] old, string[,] modified)
 		{
@@ -79,9 +98,6 @@ namespace Blazor2048
 			{
 				for (int j = 0; j < old.GetLength(1); j++)
 				{
-					Console.WriteLine(old[i, j]);
-					Console.WriteLine(modified[i, j]);
-					Console.WriteLine(old[i, j] != modified[i, j]);
 					if (old[i, j] != modified[i, j]) return true;
 					else continue;
 				}
@@ -94,7 +110,7 @@ namespace Blazor2048
 
 		public static void OnMoveLeft()
 		{
-			string[,] tempComponents = components;
+			string[,] tempComponents = CopyString(components);
 			// Loop over all rows
 			for (int i = 0; i < components.GetLength(0); i++)
 			{
@@ -146,12 +162,16 @@ namespace Blazor2048
 				}
 			}
 			DisplayStuff(ref components);
-			AddComponent();
+			if (BoardChanged(tempComponents, components))
+			{
+				AddComponent();
+			}
 			DisplayStuff(ref components);
 		}
 
 		public static void OnMoveRight()
 		{
+			string[,] tempComponents = CopyString(components);
 			// Loop over all rows
 			for (int i = 0; i < components.GetLength(0); i++)
 			{
@@ -183,10 +203,10 @@ namespace Blazor2048
 					else if (components[i, j] != null && counter < (components.GetLength(0) - 1))
 					{
 						// Check if the first component's value is the same as the current value
-						if (components[i, j] == components[i, counter])
+						if (components[i, j] == components[i, counter + 1])
 						{
 							// If yes, merge the 2 values
-							components[i, counter] = (int.Parse(components[i, j]) + int.Parse(components[i, counter])).ToString();
+							components[i, counter + 1] = (int.Parse(components[i, j]) + int.Parse(components[i, counter + 1])).ToString();
 							// And set the current value to null
 							components[i, j] = null;
 						}
@@ -202,7 +222,12 @@ namespace Blazor2048
 					}
 				}
 			}
-			AddComponent();
+			DisplayStuff(ref components);
+			if (BoardChanged(tempComponents, components))
+			{
+				AddComponent();
+			}
+			DisplayStuff(ref components);
 		}
 
 

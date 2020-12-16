@@ -8,7 +8,6 @@ namespace Blazor2048
 	{
 		public GameOverException()
 		{
-			GameSetUp.SetUpGame(4);
 		}
 	}
 }
