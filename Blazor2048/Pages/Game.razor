@@ -1,0 +1,145 @@
+﻿@page "/Game"
+
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        width: 400px;
+        background-color: gray;
+        border-radius: 7px;
+    }
+
+    .component {
+        border-radius: 7px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 1.4;
+    }
+
+    .comp- {
+        background-color: lightgray;
+        font-size: 4rem;
+    }
+
+    .comp-2 {
+        font-size: 4rem;
+        background-color: beige;
+    }
+
+    .comp-4 {
+        font-size: 4rem;
+        background-color: aqua;
+    }
+
+    .comp-8 {
+        font-size: 4rem;
+        background-color: lightblue;
+    }
+
+    .comp-16 {
+        font-size: 3.3rem;
+        background-color: purple;
+        color: #fefefe;
+        line-height: 1.7;
+    }
+
+    .comp-32 {
+        font-size: 3.3rem;
+        background-color: #1ac7bc;
+        color: #fefefe;
+        line-height: 1.7;
+    }
+
+    .comp-64 {
+        font-size: 3.3rem;
+        background-color: #944d7c;
+        color: #fefefe;
+        line-height: 1.7;
+    }
+
+    .comp-128 {
+        font-size: 2.2rem;
+        background-color: #2ef151;
+        color: #fefefe;
+        line-height: 2.5;
+    }
+
+    .comp-256 {
+        font-size: 2.2rem;
+        background-color: #afd10c;
+        color: #fefefe;
+        line-height: 2.5;
+    }
+
+    .comp-512 {
+        font-size: 2.2rem;
+        background-color: #2f9498;
+        color: #fefefe;
+        line-height: 2.5;
+    }
+
+    .comp-1024 {
+        font-size: 1.6rem;
+        background-color: #d02c4c;
+        color: #fefefe;
+        line-height: 3.5;
+    }
+
+    .comp-2048 {
+        font-size: 1.6rem;
+        background-color: #ff0000;
+        color: #fefefe;
+        line-height: 3.5;
+    }
+
+    .row {
+        height: 100px;
+    }
+
+    .col {
+        margin: 5px !important;
+    }
+</style>
+
+<div class="container" @onkeyup="OnKeyPress" tabindex="0">
+    @for (int i = 0; i < components.GetLength(0); i++)
+    {
+        <div class="row">
+            @for (int j = 0; j < components.GetLength(1); j++)
+            {
+                <div class="col component comp-@components[i,j]">@components[i, j]</div>
+            }
+        </div>
+    }
+
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        SetUpGame(4);
+    }
+
+    private void OnKeyPress(KeyboardEventArgs e)
+    {
+        Console.WriteLine(e.Key);
+        if (e.Key == "ArrowLeft")
+        {
+            OnMoveLeft();
+        }
+        else if (e.Key == "ArrowRight")
+        {
+            OnMoveRight();
+        }
+        else if (e.Key == "ArrowUp")
+        {
+            OnMoveUp();
+        }
+        else if (e.Key == "ArrowDown")
+        {
+            OnMoveDown();
+        }
+
+    }
+}

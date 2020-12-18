@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Blazor2048
 {
@@ -32,7 +33,7 @@ namespace Blazor2048
 			{
 				SetUpGame(4);
 			}
-			
+
 		}
 
 		private static int[] GetEmptySpace()
@@ -104,132 +105,166 @@ namespace Blazor2048
 			}
 			return false;
 		}
-
-
-
-
 		public static void OnMoveLeft()
 		{
 			string[,] tempComponents = CopyString(components);
-			// Loop over all rows
 			for (int i = 0; i < components.GetLength(0); i++)
 			{
-				// Counter indicates where the first empty space is in the current [i] row
-				int counter = 0;
-				// In each row loop over all columns
+				List<string> currentRow = new List<string>();
 				for (int j = 0; j < components.GetLength(1); j++)
 				{
-					// Reset temp
-					string temp;
-					// If the current component is empty, continue without doing anything
-					if (string.IsNullOrEmpty(components[i, j]))
+					if (!string.IsNullOrEmpty(components[i, j]))
 					{
-						continue;
+						currentRow.Add(components[i, j]);
 					}
-					// If the component is not empty, AND is't the first component on the row that has a value
-					else if (!string.IsNullOrEmpty(components[i, j]) && counter == 0)
+				}
+				List<string> rearrangedRow = MoveAndMerge(currentRow);
+				for (int k = 0; k < rearrangedRow.Count; k++)
+				{
+					components[i, k] = rearrangedRow[k];
+				}
+				if (components.GetLength(1) > rearrangedRow.Count)
+				{
+					for (int l = rearrangedRow.Count; l < components.GetLength(1); l++)
 					{
-						// temp is set to be the value of the fisrt component in the row (counter)
-						temp = components[i, counter];
-						//The value of the current component is moved to the first empty component
-						components[i, counter] = components[i, j];
-						// The value of temp is moved to the current component
-						components[i, j] = temp;
-						// Move up the empty spot with one
-						counter++;
-					}
-					// If the component is not empty, AND the first component is already full
-					else if (!string.IsNullOrEmpty(components[i, j]) && counter > 0)
-					{
-						// Check if the first component's value is the same as the current value
-						if (components[i, j] == components[i, counter - 1])
-						{
-							// If yes, merge the 2 values
-							components[i, counter - 1] = (int.Parse(components[i, j]) + int.Parse(components[i, counter - 1])).ToString();
-							// And set the current value to null
-							components[i, j] = string.Empty;
-						}
-						else
-						{
-							// If it's not equal, swap the values of counter and the current
-							temp = components[i, counter];
-							components[i, counter] = components[i, j];
-							components[i, j] = temp;
-							// And move up the empty spot
-							counter++;
-						}
+						components[i, l] = null;
 					}
 				}
 			}
-			DisplayStuff(ref components);
+
 			if (BoardChanged(tempComponents, components))
 			{
 				AddComponent();
 			}
-			DisplayStuff(ref components);
 		}
 
 		public static void OnMoveRight()
 		{
 			string[,] tempComponents = CopyString(components);
-			// Loop over all rows
 			for (int i = 0; i < components.GetLength(0); i++)
 			{
-				// Counter indicates where the first empty component is in this row
-				int counter = components.GetLength(0) - 1;
-				// In each row loop over all columns
+				List<string> currentRow = new List<string>();
 				for (int j = components.GetLength(1) - 1; j >= 0; j--)
 				{
-					// Reset temp
-					string temp;
-					// If the current component is empty, continue without doing anything
-					if (components[i, j] == null)
+					if (!string.IsNullOrEmpty(components[i, j]))
 					{
-						continue;
-					}
-					// If the component is not empty, AND is't the first component on the row that has a value
-					else if (components[i, j] != null && counter == (components.GetLength(0) - 1))
-					{
-						// temp is set to be the value of the fisrt component in the row (counter)
-						temp = components[i, counter];
-						//The value of the current component is moved to the first empty component
-						components[i, counter] = components[i, j];
-						// The value of temp is moved to the current component
-						components[i, j] = temp;
-						// Move up the empty spot with one
-						counter--;
-					}
-					// If the component is not empty, AND the first component is already full
-					else if (components[i, j] != null && counter < (components.GetLength(0) - 1))
-					{
-						// Check if the first component's value is the same as the current value
-						if (components[i, j] == components[i, counter + 1])
-						{
-							// If yes, merge the 2 values
-							components[i, counter + 1] = (int.Parse(components[i, j]) + int.Parse(components[i, counter + 1])).ToString();
-							// And set the current value to null
-							components[i, j] = null;
-						}
-						else
-						{
-							// If it's not equal, swap the values of counter and the current
-							temp = components[i, counter];
-							components[i, counter] = components[i, j];
-							components[i, j] = temp;
-							// And move up the empty spot
-							counter--;
-						}
+						currentRow.Add(components[i, j]);
 					}
 				}
+				List<string> rearrangedRow = MoveAndMerge(currentRow);
+
+				int countDown = components.GetLength(1) - 1;
+				for (int k = 0; k < rearrangedRow.Count; k++)
+				{
+					components[i, countDown] = rearrangedRow[k];
+					countDown--;
+				}
+				for (int l = countDown; l >= 0; l--)
+				{
+					components[i, l] = null;
+				}
 			}
-			DisplayStuff(ref components);
+
 			if (BoardChanged(tempComponents, components))
 			{
 				AddComponent();
 			}
-			DisplayStuff(ref components);
 		}
 
+		public static void OnMoveUp()
+		{
+			string[,] tempComponents = CopyString(components);
+			for (int i = 0; i < components.GetLength(1); i++)
+			{
+				List<string> currentRow = new List<string>();
+				for (int j = 0; j < components.GetLength(0); j++)
+				{
+					if (!string.IsNullOrEmpty(components[j, i]))
+					{
+						currentRow.Add(components[j, i]);
+					}
+				}
+
+				List<string> rearrangedRow = MoveAndMerge(currentRow);
+				for (int k = 0; k < rearrangedRow.Count; k++)
+				{
+					components[k, i] = rearrangedRow[k];
+				}
+				if (components.GetLength(0) > rearrangedRow.Count)
+				{
+					for (int l = rearrangedRow.Count; l < components.GetLength(1); l++)
+					{
+						components[l, i] = null;
+					}
+				}
+			}
+
+			if (BoardChanged(tempComponents, components))
+			{
+				AddComponent();
+			}
+		}
+
+		public static void OnMoveDown()
+		{
+			string[,] tempComponents = CopyString(components);
+			for (int i = 0; i < components.GetLength(0); i++)
+			{
+				List<string> currentRow = new List<string>();
+				for (int j = components.GetLength(1) - 1; j >= 0; j--)
+				{
+					if (!string.IsNullOrEmpty(components[j, i]))
+					{
+						currentRow.Add(components[j, i]);
+					}
+				}
+				List<string> rearrangedRow = MoveAndMerge(currentRow);
+
+				int countDown = components.GetLength(1) - 1;
+				for (int k = 0; k < rearrangedRow.Count; k++)
+				{
+					components[countDown, i] = rearrangedRow[k];
+					countDown--;
+				}
+				for (int l = countDown; l >= 0; l--)
+				{
+					components[l, i] = null;
+				}
+			}
+
+			if (BoardChanged(tempComponents, components))
+			{
+				AddComponent();
+			}
+
+		}
+
+
+		private static List<string> MoveAndMerge(List<string> currentRow)
+		{
+			List<string> toReturn = new List<string>();
+			while (currentRow.Count > 1)
+			{
+				if (currentRow[0] == currentRow[1])
+				{
+					int merged = int.Parse(currentRow[0]) + int.Parse(currentRow[1]);
+					toReturn.Add(merged.ToString());
+					currentRow.RemoveRange(0, 2);
+				}
+				else if (currentRow[0] != currentRow[1])
+				{
+					toReturn.Add(currentRow[0]);
+					currentRow.RemoveAt(0);
+				}
+			}
+
+			if (currentRow.Count == 1)
+			{
+				toReturn.Add(currentRow[0]);
+			}
+
+			return toReturn;
+		}
 
 		private static void DisplayStuff(ref string[,] toDisplay)
 		{
@@ -242,7 +277,3 @@ namespace Blazor2048
 
 	}
 }
-
-
-
-//TODO figure out how to copy a reference type
