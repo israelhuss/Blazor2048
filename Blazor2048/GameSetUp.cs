@@ -76,6 +76,7 @@ namespace Blazor2048
 					}
 				}
 			}
+			Console.WriteLine(count);
 			if (count == 16) return true;
 			else return false;
 		}

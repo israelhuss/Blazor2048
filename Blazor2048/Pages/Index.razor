@@ -1,10 +1,30 @@
 ﻿@page "/"
 @inherits LayoutComponentBase
 
-
-<h1>Hiiiii!!!!!!!!!!!!!!!!!</h1>
+<div class="container p-5" style="text-align: center;">
+    <div class="row  d-flex justify-content-center " >
+        <h1>Welcome</h1>
+    </div>
+    <div class="row d-flex justify-content-center" >
+        <h4>Please choose a board</h4>
+    </div>
+    <div class="row  d-flex justify-content-center mt-5">
+        <div class="card" style="width: 18rem;">
+            <img src="img\GameScreenshot.png" class="card-img-top" alt="4 x 4 game board">
+            <div class="card-body" id="4">
+                <h5 class="card-title" style="font-weight: bold;">4 x 4</h5>
+                <p class="card-text">Hard</p>
+                <a href="/game" class="btn btn-primary" @onclick="() => CreateGame(4)">Start the game</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @code {
+    private void CreateGame(int size)
+    {
+        SetUpGame(size);
+    }
 
 }

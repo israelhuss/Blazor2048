@@ -5,16 +5,21 @@
     .container {
         display: flex;
         flex-direction: column;
-        width: 400px;
+        width: @containerWidth;
         background-color: gray;
         border-radius: 7px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        margin-top: 20vh !important;
     }
 
     .component {
         border-radius: 7px;
         font-weight: bold;
         text-align: center;
-        line-height: 1.4;
+        line-height: 90px;
     }
 
     .comp- {
@@ -38,59 +43,51 @@
     }
 
     .comp-16 {
-        font-size: 3.3rem;
+        font-size: 3.2rem;
         background-color: purple;
         color: #fefefe;
-        line-height: 1.7;
     }
 
     .comp-32 {
-        font-size: 3.3rem;
+        font-size: 3.2rem;
         background-color: #1ac7bc;
         color: #fefefe;
-        line-height: 1.7;
     }
 
     .comp-64 {
-        font-size: 3.3rem;
+        font-size: 3.2rem;
         background-color: #944d7c;
         color: #fefefe;
-        line-height: 1.7;
     }
 
     .comp-128 {
-        font-size: 2.2rem;
+        font-size: 2.1rem;
         background-color: #2ef151;
         color: #fefefe;
-        line-height: 2.5;
     }
 
     .comp-256 {
-        font-size: 2.2rem;
+        font-size: 2.1rem;
         background-color: #afd10c;
         color: #fefefe;
-        line-height: 2.5;
     }
 
     .comp-512 {
-        font-size: 2.2rem;
+        font-size: 2.1rem;
         background-color: #2f9498;
         color: #fefefe;
-        line-height: 2.5;
     }
 
     .comp-1024 {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         background-color: #d02c4c;
         color: #fefefe;
-        line-height: 3.5;
     }
 
     .comp-2048 {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         background-color: #ff0000;
         color: #fefefe;
-        line-height: 3.5;
     }
 
     .row {
@@ -116,10 +113,12 @@
 </div>
 
 @code {
-    protected override void OnInitialized()
-    {
-        SetUpGame(4);
-    }
+    //protected override void OnInitialized()
+    //{
+    //    SetUpGame(4);
+    //}
+
+    private string containerWidth = (components.GetLength(0) * 100).ToString() + "px";
 
     private void OnKeyPress(KeyboardEventArgs e)
     {
