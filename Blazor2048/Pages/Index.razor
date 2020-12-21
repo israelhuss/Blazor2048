@@ -8,13 +8,29 @@
     <div class="row d-flex justify-content-center" >
         <h4>Please choose a board</h4>
     </div>
-    <div class="row  d-flex justify-content-center mt-5">
+    <div class="row  d-flex justify-content-around mt-5">
         <div class="card" style="width: 18rem;">
-            <img src="img\GameScreenshot.png" class="card-img-top" alt="4 x 4 game board">
+            <img src="img\Game4x4.png" class="card-img-top" alt="4 x 4 game board">
             <div class="card-body" id="4">
                 <h5 class="card-title" style="font-weight: bold;">4 x 4</h5>
                 <p class="card-text">Hard</p>
                 <a href="/game" class="btn btn-primary" @onclick="() => CreateGame(4)">Start the game</a>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <img src="img\Game5x5.png" class="card-img-top" alt="5 x 5 game board">
+            <div class="card-body" id="5">
+                <h5 class="card-title" style="font-weight: bold;">5 x 5</h5>
+                <p class="card-text">Medium</p>
+                <a href="/game" class="btn btn-primary" @onclick="() => CreateGame(5)">Start the game</a>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <img src="img\Game6x6.png" class="card-img-top" alt="6 x 6 game board">
+            <div class="card-body" id="6">
+                <h5 class="card-title" style="font-weight: bold;">6 x 6</h5>
+                <p class="card-text">Easy</p>
+                <a href="/game" class="btn btn-primary" @onclick="() => CreateGame(6)">Start the game</a>
             </div>
         </div>
     </div>
