@@ -57,8 +57,8 @@ namespace Blazor2048
 		private static int[] GetRandomPosition()
 		{
 
-			int randomX = random.Next(4);
-			int randomY = random.Next(4);
+			int randomX = random.Next(components.GetLength(0));
+			int randomY = random.Next(components.GetLength(0));
 			int[] randomPosition = new int[2] { randomX, randomY };
 			return randomPosition;
 		}
@@ -77,7 +77,7 @@ namespace Blazor2048
 				}
 			}
 			Console.WriteLine(count);
-			if (count == 16) return true;
+			if (count == components.GetLength(0) * components.GetLength(1)) return true;
 			else return false;
 		}
 

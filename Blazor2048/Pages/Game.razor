@@ -12,7 +12,7 @@
         padding-right: 20px;
         padding-top: 5px;
         padding-bottom: 5px;
-        margin-top: 20vh !important;
+        margin-top: 5vh !important;
     }
 
     .component {
@@ -99,6 +99,9 @@
     }
 </style>
 
+<div class="row justify-content-center mt-5" >
+    <h2>Click on the board, then use the directional keys to play.</h2>
+</div>
 <div class="container" @onkeyup="OnKeyPress" tabindex="0">
     @for (int i = 0; i < components.GetLength(0); i++)
     {
